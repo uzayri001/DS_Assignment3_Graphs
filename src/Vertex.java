@@ -15,4 +15,12 @@ public class Vertex {
         this.data = data;
         this.edges = new ArrayList<>();
     }
+
+    public void addEdge(Vertex endVertex, int weight) {
+        this.edges.add(new Edge(this, endVertex, weight));
+    }
+
+    public String getData() {return this.data;}
+
+    public ArrayList<Edge> getEdges() {return this.edges;}
 }
