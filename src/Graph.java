@@ -82,7 +82,10 @@ class Vertex
     public void reset( )
     //  { dist = Graph.INFINITY; prev = null; pos = null; scratch = 0; }    
     { dist = Graph.INFINITY; prev = null; scratch = 0; }
-      
+    
+    public void setName(String newName) {
+        this.name = newName;
+    }
    // public PairingHeap.Position<Path> pos;  // Used for dijkstra2 (Chapter 23)
 }
 
