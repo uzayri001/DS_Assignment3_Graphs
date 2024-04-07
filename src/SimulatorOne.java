@@ -48,8 +48,7 @@ public class SimulatorOne {
                 for (int column=0;column<row.size();column+=2) {
                     if (i<=num) {
                         Vertex currentVertex = googleMaps.vertexMap.get(String.valueOf(graphArrayList.get(i).get(0)));
-                        if (column==0) {continue;}
-                        else {
+                        if (column != 0) {
                             double weight = graphArrayList.get(i).get(column);
                             int endVertexNum = graphArrayList.get(i).get(column-1);
                             Vertex endVertex = googleMaps.vertexMap.get(String.valueOf(endVertexNum));
@@ -57,33 +56,40 @@ public class SimulatorOne {
                         }
                     }
                 }
-                for (int column=0;column<row.size();column++) {
-                    if (i==num+2) {
-                        String vertexNum = String.valueOf(graphArrayList.get(i).get(column));
-                        Vertex vertex = googleMaps.vertexMap.get(vertexNum);
-                        vertex.setName("shop " + vertexNum);
-                    }
-                    else if (i == graphArrayList.size()-1) {
-                        String vertexNum = String.valueOf(graphArrayList.get(i).get(column));
-                        Vertex vertex = googleMaps.vertexMap.get(vertexNum);
-                        vertex.setName("client " + vertexNum);
-                    }
-                }
             }
             ArrayList<Integer> lastRow = graphArrayList.get(graphArrayList.size()-1);
             for (int v: lastRow) {
-                String startName = "client " +v;
-                googleMaps.dijkstra(startName);
-                double distance = Double.POSITIVE_INFINITY;
+                String startName = String.valueOf(v);
+                double taxiToClient = Double.POSITIVE_INFINITY;
                 Vertex closestTaxi = null;
-                for (Map.Entry<String, Vertex> entry : googleMaps.vertexMap.entrySet()) {
-                    if (entry.getKey().contains("shop")) {
-                        if (entry.getValue().dist < distance) {
-                            distance = entry.getValue().dist;
-                            closestTaxi = entry.getValue();
+                double clientToShop = Double.POSITIVE_INFINITY;
+                Vertex closestShop = null;
+                for (int y=0;y<num;y++) {
+                    if (!(lastRow.contains(y))) {
+                        googleMaps.dijkstra(Integer.toString(y));
+                        for (Map.Entry<String, Vertex> entry : googleMaps.vertexMap.entrySet()) {
+                            if (lastRow.contains(Integer.valueOf(entry.getKey()))) {
+                                if (entry.getValue().dist < taxiToClient) {
+                                    taxiToClient = entry.getValue().dist;
+                                    closestTaxi = entry.getValue();
+                                }
+                            }
                         }
                     }
                 }
+                googleMaps.dijkstra(startName);
+                for (Map.Entry<String, Vertex> entry : googleMaps.vertexMap.entrySet()) {
+                    if (!(lastRow.contains(Integer.valueOf(entry.getKey())))) {
+                        if (entry.getValue().dist < clientToShop) {
+                            clientToShop = entry.getValue().dist;
+                            closestShop = entry.getValue();
+                        }
+                    }
+                }
+                System.out.println("client " + startName);
+                System.out.println("taxi " + closestTaxi.name);
+                System.out.println("client " + startName);
+                System.out.println("shop " + closestShop.name);
             }
         }
     }
