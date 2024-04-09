@@ -139,7 +139,6 @@ public class Graph
             System.out.println( destName + " is unreachable" );
         else
         {
-            System.out.print( "(Cost is: " + w.dist + ") " );
             printPath( w );
             System.out.println( );
         }
@@ -170,7 +169,7 @@ public class Graph
         if( dest.prev != null )
         {
             printPath( dest.prev );
-            System.out.print( " to " );
+            System.out.print( " " );
         }
         System.out.print( dest.name );
     }
@@ -179,7 +178,7 @@ public class Graph
      * Initializes the vertex output info prior to running
      * any shortest path algorithm.
      */
-    private void clearAll( )
+    public void clearAll( )
     {
         for( Vertex v : vertexMap.values( ) )
             v.reset( );

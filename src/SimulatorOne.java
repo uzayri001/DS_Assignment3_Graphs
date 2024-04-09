@@ -57,39 +57,44 @@ public class SimulatorOne {
                     }
                 }
             }
-            ArrayList<Integer> lastRow = graphArrayList.get(graphArrayList.size()-1);
-            for (int v: lastRow) {
-                String startName = String.valueOf(v);
+            ArrayList<Integer> clientArrayList = graphArrayList.get(graphArrayList.size() - 1);
+            ArrayList<Integer> shopArrayList = graphArrayList.get(num + 2);
+
+            for (int client : clientArrayList) {
+                Vertex clientVertex = googleMaps.vertexMap.get(String.valueOf(client));
                 double taxiToClient = Double.POSITIVE_INFINITY;
                 Vertex closestTaxi = null;
                 double clientToShop = Double.POSITIVE_INFINITY;
                 Vertex closestShop = null;
-                for (int y=0;y<num;y++) {
-                    if (!(lastRow.contains(y))) {
-                        googleMaps.dijkstra(Integer.toString(y));
-                        for (Map.Entry<String, Vertex> entry : googleMaps.vertexMap.entrySet()) {
-                            if (lastRow.contains(Integer.valueOf(entry.getKey()))) {
-                                if (entry.getValue().dist < taxiToClient) {
-                                    taxiToClient = entry.getValue().dist;
-                                    closestTaxi = entry.getValue();
-                                }
-                            }
-                        }
+                // Find the closest taxi to the current client
+                for (int shop : shopArrayList) {
+                    String start = String.valueOf(shop);
+                    googleMaps.dijkstra(start);
+                    if (clientVertex.dist < taxiToClient) {
+                        taxiToClient = clientVertex.dist;
+                        closestTaxi = googleMaps.vertexMap.get(String.valueOf(shop));
                     }
                 }
-                googleMaps.dijkstra(startName);
+
+                System.out.println("client " + client);
+                System.out.println("taxi " + closestTaxi.name);
+                googleMaps.printPath(String.valueOf(client));
+                googleMaps.clearAll();
+
+                // Find the closest shop to the current client
+                googleMaps.dijkstra(String.valueOf(client));
                 for (Map.Entry<String, Vertex> entry : googleMaps.vertexMap.entrySet()) {
-                    if (!(lastRow.contains(Integer.valueOf(entry.getKey())))) {
+                    if (shopArrayList.contains(Integer.valueOf(entry.getKey()))) {
                         if (entry.getValue().dist < clientToShop) {
                             clientToShop = entry.getValue().dist;
                             closestShop = entry.getValue();
                         }
                     }
                 }
-                System.out.println("client " + startName);
-                System.out.println("taxi " + closestTaxi.name);
-                System.out.println("client " + startName);
+
+                System.out.println("client " + client);
                 System.out.println("shop " + closestShop.name);
+                googleMaps.printPath(String.valueOf(closestShop.name));
             }
         }
     }
